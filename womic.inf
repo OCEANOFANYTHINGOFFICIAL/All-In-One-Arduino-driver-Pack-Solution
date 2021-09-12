@@ -1,0 +1,106 @@
+;
+; Genrated from table. NEVER edit this directly.
+;
+
+[Version]
+Signature="$WINDOWS NT$"
+Class=MEDIA
+ClassGUID={4d36e96c-e325-11ce-bfc1-08002be10318}	
+Provider=%INF_Creator% 	
+DriverVer=05/22/2021,2.0.0.0
+CatalogFile=womic.cat
+
+[SourceDisksNames]
+1="WO Mic Driver Files"		
+
+[SourceDisksFiles]
+womic.sys=1					
+
+[DestinationDirs]
+DefaultDestDir=12		
+
+[Manufacturer]
+%MfgName%=MyMfgName, NTx86	
+
+[MyMfgName.NTx86] 
+%WOVAD.DeviceDesc%=InstallWOMic,Root\WOMic
+
+;======================================================
+; DDInstall
+;======================================================
+[InstallWOMic]
+Include=ks.inf, wdmaudio.inf					
+Needs=KS.Registration, WDMAUDIO.Registration	
+CopyFiles=InstallWOMic.CopyList
+AddReg=InstallWOMic.AddReg
+
+[InstallWOMic.CopyList]
+womic.sys
+
+[InstallWOMic.AddReg]
+HKR,,AssociatedFilters,,"wdmaud,swmidi,redbook"
+HKR,,Driver,,womic.sys
+
+HKR,Drivers,SubClasses,,"wave,midi,mixer"
+
+HKR,Drivers\wave\wdmaud.drv,Driver,,wdmaud.drv
+HKR,Drivers\midi\wdmaud.drv,Driver,,wdmaud.drv
+HKR,Drivers\mixer\wdmaud.drv,Driver,,wdmaud.drv
+
+HKR,Drivers\wave\wdmaud.drv,Description,,%WOVAD.DeviceDesc%
+HKR,Drivers\midi\wdmaud.drv,Description,,%WOVAD_MIDI%
+HKR,Drivers\mixer\wdmaud.drv,Description,,%WOVAD.DeviceDesc%
+
+
+
+[InstallWOMic.Interfaces]
+AddInterface=%KSCATEGORY_AUDIO%,%KSNAME_Wave%,WOVAD.I.Wave
+AddInterface=%KSCATEGORY_CAPTURE%,%KSNAME_Wave%,WOVAD.I.Wave
+AddInterface=%KSCATEGORY_AUDIO%,%KSNAME_Topology%,WOVAD.I.Topo
+
+
+[WOVAD.I.Wave]
+AddReg=WOVAD.I.Wave.AddReg
+
+[WOVAD.I.Wave.AddReg]
+HKR,,CLSID,,%KSProxy.CLSID%
+HKR,,FriendlyName,,%WOVAD.Wave.szPname%
+
+[WOVAD.I.Topo]
+AddReg=WOVAD.I.Topo.AddReg
+
+[WOVAD.I.Topo.AddReg]
+HKR,,CLSID,,%KSProxy.CLSID%
+HKR,,FriendlyName,,%WOVAD.Topo.szPname%
+
+[InstallWOMic.Services]
+AddService=WOVAD,0x00000002,WOMic_Service_Inst
+
+[WOMic_Service_Inst]
+DisplayName=%WOVAD.SvcDesc%
+ServiceType=1
+StartType=3
+ErrorControl=1
+ServiceBinary=%12%\womic.sys
+
+
+;======================================================
+; COMMON
+;======================================================
+[Strings]
+INF_Creator="Wolicheng Tech Ltd."
+MfgName="Wolicheng Tech Ltd."
+WOVAD.DeviceDesc="WO Mic Device"
+
+WOVAD.Wave.szPname="WO Mic Wave"
+WOVAD.Topo.szPname="WO Mic Topo"
+WOVAD_MIDI="WO Mic -> WDM Midi Device"
+
+KSProxy.CLSID="{17CCA71B-ECD7-11D0-B908-00A0C9223196}"
+KSCATEGORY_AUDIO="{6994AD04-93EF-11D0-A3CC-00A0C9223196}"
+KSCATEGORY_CAPTURE="{65E8773D-8F56-11D0-A3B9-00A0C9223196}"
+
+KSNAME_Wave="WOMicInWave"
+KSNAME_Topology="Topology"
+
+WOVAD.SvcDesc="WO Mic Driver"
